@@ -1,5 +1,6 @@
 """Common Selenium 4 wait/interaction helpers shared by all page objects."""
 
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
@@ -21,7 +22,17 @@ class BasePage:
         return self.wait.until(EC.visibility_of_element_located(locator))
 
     def click(self, locator: tuple[str, str]) -> None:
-        self.wait.until(EC.element_to_be_clickable(locator)).click()
+        # A click that triggers immediate navigation (e.g. form submit) can
+        # occasionally go stale between being located and being clicked; a
+        # few retries cover that race without masking real staleness elsewhere.
+        attempts = 3
+        for attempt in range(attempts):
+            try:
+                self.wait.until(EC.element_to_be_clickable(locator)).click()
+                return
+            except StaleElementReferenceException:
+                if attempt == attempts - 1:
+                    raise
 
     def type_text(self, locator: tuple[str, str], text: str) -> None:
         element = self.find(locator)
