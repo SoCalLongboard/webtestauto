@@ -19,5 +19,8 @@ class BaseAPIClient:
     def put(self, path: str, **kwargs) -> requests.Response:
         return self.session.put(f"{self.base_url}{path}", **kwargs)
 
+    def patch(self, path: str, **kwargs) -> requests.Response:
+        return self.session.patch(f"{self.base_url}{path}", **kwargs)
+
     def delete(self, path: str, **kwargs) -> requests.Response:
         return self.session.delete(f"{self.base_url}{path}", **kwargs)

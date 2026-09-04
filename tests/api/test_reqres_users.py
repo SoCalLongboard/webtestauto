@@ -51,6 +51,31 @@ def test_update_user_returns_updated_payload(client):
     assert body["job"] == "The One"
 
 
+def test_update_unknown_user_still_returns_updated_payload(client):
+    # reqres doesn't verify the id exists for PUT, unlike GET - it echoes the payload back.
+    response = client.update_user(23, name="Neo", job="The One")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["name"] == "Neo"
+    assert body["job"] == "The One"
+
+
+def test_patch_user_returns_updated_payload(client):
+    response = client.patch_user(2, job="The Architect")
+
+    assert response.status_code == 200
+    assert response.json()["job"] == "The Architect"
+
+
+def test_patch_unknown_user_still_returns_updated_payload(client):
+    # reqres doesn't verify the id exists for PATCH, unlike GET - it echoes the payload back.
+    response = client.patch_user(23, job="The Architect")
+
+    assert response.status_code == 200
+    assert response.json()["job"] == "The Architect"
+
+
 def test_delete_user_returns_no_content(client):
     response = client.delete_user(2)
 

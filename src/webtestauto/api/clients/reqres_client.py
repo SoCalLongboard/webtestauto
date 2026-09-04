@@ -19,5 +19,8 @@ class ReqresClient(BaseAPIClient):
     def update_user(self, user_id: int, name: str, job: str) -> requests.Response:
         return self.put(f"/api/users/{user_id}", json={"name": name, "job": job})
 
+    def patch_user(self, user_id: int, **fields) -> requests.Response:
+        return self.patch(f"/api/users/{user_id}", json=fields)
+
     def delete_user(self, user_id: int) -> requests.Response:
         return self.delete(f"/api/users/{user_id}")
