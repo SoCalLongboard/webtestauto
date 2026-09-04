@@ -31,6 +31,34 @@ def build_driver(
     headless: bool = True,
     grid_url: str | None = None,
 ) -> WebDriver:
+    """Build a Selenium WebDriver, local or against a remote Grid.
+
+    Used by the ``driver`` fixture in `tests/conftest.py` to provision the
+    browser instance every web test runs against.
+
+    Parameters
+    ----------
+    browser : str, optional
+        Browser to launch: ``"chrome"`` or ``"firefox"`` (case-insensitive).
+        Defaults to ``"chrome"``.
+    headless : bool, optional
+        Whether to run without a visible window. Defaults to `True`.
+    grid_url : str or None, optional
+        Selenium Grid / Remote WebDriver URL (e.g.
+        ``"http://localhost:4444/wd/hub"``). When given, a `webdriver.Remote`
+        is returned instead of a local driver. Defaults to `None`.
+
+    Returns
+    -------
+    selenium.webdriver.remote.webdriver.WebDriver
+        A ready-to-use driver instance; the caller is responsible for calling
+        `.quit()` on it.
+
+    Raises
+    ------
+    ValueError
+        If `browser` is not one of the supported values.
+    """
     browser = browser.lower()
     if browser not in _OPTIONS_BY_BROWSER:
         known = ", ".join(sorted(_OPTIONS_BY_BROWSER))

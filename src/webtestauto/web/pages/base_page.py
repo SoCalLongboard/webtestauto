@@ -11,6 +11,23 @@ DEFAULT_TIMEOUT = 10
 
 class BasePage:
     def __init__(self, driver: WebDriver, base_url: str, timeout: int = DEFAULT_TIMEOUT):
+        """Create a page object bound to a live driver session.
+
+        None of the concrete page subclasses in this repo override
+        `__init__`, so tests that construct a page (e.g. ``LoginPage(driver,
+        site.base_url)``) invoke this directly.
+
+        Parameters
+        ----------
+        driver : selenium.webdriver.remote.webdriver.WebDriver
+            The active browser session to drive.
+        base_url : str
+            Root URL of the site under test, used by `open` to build full
+            paths.
+        timeout : int, optional
+            Seconds to wait for elements before timing out. Defaults to
+            `DEFAULT_TIMEOUT`.
+        """
         self.driver = driver
         self.base_url = base_url
         self.wait = WebDriverWait(driver, timeout)
