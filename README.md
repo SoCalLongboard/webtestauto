@@ -34,6 +34,24 @@ tests/
 
 No other framework code needs to change — everything else reads the site key at test time.
 
+## API verb coverage
+
+`tests/api/test_reqres_users.py` exercises every HTTP verb the reqres.in `/api/users` resource
+supports, each with a positive case and a negative case where reqres' behavior meaningfully
+differs:
+
+| Verb   | Positive                          | Negative                                                              |
+|--------|------------------------------------|-------------------------------------------------------------------------|
+| GET    | list users, fetch by id           | unknown id → `404`                                                      |
+| POST   | create user → `201`               | —                                                                        |
+| PUT    | update user → `200`               | unknown id still → `200` (reqres doesn't validate ids on PUT)           |
+| PATCH  | partial update user → `200`       | unknown id still → `200` (reqres doesn't validate ids on PATCH)         |
+| DELETE | delete user → `204`               | —                                                                        |
+
+Only GET enforces the id lookup; PUT/PATCH/DELETE echo back a success response regardless of
+whether the id exists, which the negative-path tests assert directly rather than assuming a
+`404` that reqres doesn't return.
+
 ## Setup
 
 ```bash
